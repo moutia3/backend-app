@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\AuthRepositoryInterface;
 use App\Repositories\AuthRepository;
+use App\Repositories\TeletravailRequestRepository;
+use App\Repositories\TeletravailRequestRepositoryInterface;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
+        $this->app->bind(TeletravailRequestRepositoryInterface::class, TeletravailRequestRepository::class);
     }
 
     /**

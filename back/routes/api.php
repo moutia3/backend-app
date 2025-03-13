@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TeletravailRequestController;
 
 
 
@@ -40,5 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::middleware('role:employee|manager|admin')->group(function () {
         Route::get('/posts', [PostController::class, 'index']);
+    });
+
+    Route::middleware('role:manager|employee')->group(function () {
+        Route::post('/teletravail-requests', [TeletravailRequestController::class, 'submitRequest']);
     });
 });
