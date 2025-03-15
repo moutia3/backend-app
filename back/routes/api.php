@@ -45,5 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:manager|employee')->group(function () {
         Route::post('/teletravail-requests', [TeletravailRequestController::class, 'submitRequest']);
+        Route::put('/teletravail-requests/{id}', [TeletravailRequestController::class, 'updateRequest']);
     });
+    
 });
