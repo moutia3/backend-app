@@ -12,15 +12,19 @@ class TeletravailRequestRepository implements TeletravailRequestRepositoryInterf
     }
     
     public function update($id, array $data)
-{
-    $teletravailRequest = TeletravailRequest::find($id);
+    {
+        $teletravailRequest = TeletravailRequest::find($id);
 
-    if (!$teletravailRequest) {
-        return null;
+        if (!$teletravailRequest) {
+            return null;
+        }
+
+        $teletravailRequest->update($data);
+
+        return $teletravailRequest;
     }
-
-    $teletravailRequest->update($data);
-
-    return $teletravailRequest;
-}
+public function find($id)
+    {
+        return TeletravailRequest::find($id);
+    }
 }
