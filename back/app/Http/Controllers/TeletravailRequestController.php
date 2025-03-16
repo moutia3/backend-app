@@ -32,4 +32,33 @@ class TeletravailRequestController extends Controller
 
         return response()->json(['message' => 'Demande soumise avec succès', 'request' => $teletravailRequest], 201);
     }
+
+    public function updateRequest(Request $request, $id)
+    {
+        $request->validate([
+            'date' => 'sometimes|date',
+            'reason' => 'sometimes|string|max:255',
+        ]);
+
+        $data = $request->only(['date', 'reason']);
+
+        $teletravailRequest = $this->repository->update($id, $data);
+
+        if (!$teletravailRequest) {
+            return response()->json(['message' => 'Demande non trouvée'], 404);
+        }
+
+        return response()->json(['message' => 'Demande mise à jour avec succès', 'request' => $teletravailRequest], 200);
+    }
+
+    public function showRequest($id)
+{
+    $teletravailRequest = $this->repository->find($id);
+
+    if (!$teletravailRequest) {
+        return response()->json(['message' => 'Demande non trouvée'], 404);
+    }
+
+    return response()->json(['request' => $teletravailRequest], 200);
+}
 }
