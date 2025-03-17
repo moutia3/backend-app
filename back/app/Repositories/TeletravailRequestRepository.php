@@ -23,8 +23,13 @@ class TeletravailRequestRepository implements TeletravailRequestRepositoryInterf
 
         return $teletravailRequest;
     }
-public function find($id)
+    public function find($id)
     {
         return TeletravailRequest::find($id);
+    }
+
+    public function findByUser($userId)
+    {
+        return TeletravailRequest::where('user_id', $userId)->get();
     }
 }

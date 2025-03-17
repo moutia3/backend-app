@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/teletravail-requests', [TeletravailRequestController::class, 'submitRequest']);
         Route::put('/teletravail-requests/{id}', [TeletravailRequestController::class, 'updateRequest']);
         Route::get('/teletravail-requests/{id}', [TeletravailRequestController::class, 'showRequest']);
+        Route::get('/teletravail-requests', [TeletravailRequestController::class, 'showRequests']);
     });
     
 });
