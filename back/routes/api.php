@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TeletravailRequestController;
+use App\Http\Controllers\DepartmentController;
 
 
 
@@ -37,6 +38,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:manager|admin')->group(function () {
         
         Route::put('/posts/{id}', [PostController::class, 'update']);
+        Route::get('/departments', [DepartmentController::class, 'index']);
+        Route::post('/departments', [DepartmentController::class, 'store']);
+        Route::get('/departments/{id}', [DepartmentController::class, 'show']);
+        Route::put('/departments/{id}', [DepartmentController::class, 'update']);
+        Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
     });
     
     Route::middleware('role:employee|manager|admin')->group(function () {
