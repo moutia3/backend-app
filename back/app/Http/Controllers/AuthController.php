@@ -97,11 +97,14 @@ class AuthController extends Controller
         return response()->json($user);
     }
 
-    public function getAllUsers()
-    {
-        $users = $this->authRepository->getAllUsers();
-        return response()->json($users);
-    }
+    public function getAllUsers(Request $request)
+{
+    $page = $request->input('page', 1);
+    $limit = 6;
+
+    $users = $this->authRepository->getAllUsers($page, $limit);
+    return response()->json($users);
+}
 
     public function updateUser(Request $request, $id)
     {

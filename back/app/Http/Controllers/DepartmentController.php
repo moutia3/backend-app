@@ -14,11 +14,16 @@ class DepartmentController extends Controller
         $this->repository = $repository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $departments = $this->repository->all();
-        return response()->json(['departments' => $departments], 200);
+        $limit = $request->input('limit', 6); // Default items per page
+        $page = $request->input('page', 1); // Current page
+
+        $departments = $this->repository->paginate($page, $limit);
+
+        return response()->json($departments, 200);
     }
+
 
     public function store(Request $request)
     {

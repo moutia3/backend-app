@@ -44,4 +44,9 @@ class DepartmentRepository implements DepartmentRepositoryInterface
 
         return $department->delete();
     }
+
+    public function paginate($page, $limit)
+    {
+        return Department::paginate($limit, ['*'], 'page', $page);
+    }
 }
