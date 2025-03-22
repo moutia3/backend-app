@@ -85,10 +85,10 @@ class AuthRepository implements AuthRepositoryInterface
         return $user;
     }
 
-    public function getAllUsers()
-    {
-        return User::with('roles')->get(); 
-    }
+    public function getAllUsers($page = 1, $limit = 6)
+{
+    return User::with('roles')->paginate($limit, ['*'], 'page', $page);
+}
     public function getUserById($id)
 {
     return User::find($id);

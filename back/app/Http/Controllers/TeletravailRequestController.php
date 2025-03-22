@@ -53,7 +53,10 @@ class TeletravailRequestController extends Controller
     public function showRequests(Request $request)
     {
         $userId = Auth::id();
-        $teletravailRequests = $this->repository->findByUser($userId);
+        $page = $request->input('page', 1);
+        $limit = $request->input('limit', 6); // Default limit
+    
+        $teletravailRequests = $this->repository->findByUser($userId, $page, $limit);
     
         if ($teletravailRequests->isEmpty()) {
             return response()->json(['message' => 'Aucune demande trouvée'], 404);
