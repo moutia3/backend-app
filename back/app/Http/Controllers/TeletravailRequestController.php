@@ -20,19 +20,20 @@ class TeletravailRequestController extends Controller
         $request->validate([
             'date' => 'required|date',
             'reason' => 'required|string|max:255',
+            'department_id' => 'required|exists:departments,id', // Validez l'existence du département
         ]);
-
+    
         $data = [
             'user_id' => Auth::id(),
+            'department_id' => $request->department_id, // Ajoutez department_id
             'date' => $request->date,
             'reason' => $request->reason,
         ];
-
+    
         $teletravailRequest = $this->repository->create($data);
-
+    
         return response()->json(['message' => 'Demande soumise avec succès', 'request' => $teletravailRequest], 201);
     }
-
     public function updateRequest(Request $request, $id)
     {
         $request->validate([
