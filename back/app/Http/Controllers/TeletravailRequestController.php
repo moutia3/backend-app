@@ -55,7 +55,7 @@ class TeletravailRequestController extends Controller
     {
         $userId = Auth::id();
         $page = $request->input('page', 1);
-        $limit = $request->input('limit', 6); // Default limit
+        $limit = 6; // Default limit
     
         $teletravailRequests = $this->repository->findByUser($userId, $page, $limit);
     
