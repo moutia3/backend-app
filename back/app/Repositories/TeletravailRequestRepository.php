@@ -28,7 +28,7 @@ class TeletravailRequestRepository implements TeletravailRequestRepositoryInterf
         return TeletravailRequest::find($id);
     }
 
-    public function findByUser($userId, $page = 1, $limit = 10)
+    public function findByUser($userId, $page = 1, $limit = 6)
 {
     return TeletravailRequest::where('user_id', $userId)
         ->paginate($limit, ['*'], 'page', $page);
