@@ -47,6 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::middleware('role:employee|manager|admin')->group(function () {
         Route::get('/posts', [PostController::class, 'index']);
+        Route::get('/departments/{id}', [DepartmentController::class, 'show']);
+        Route::get('/departments', [DepartmentController::class, 'index']);
     });
 
     Route::middleware('role:manager|employee')->group(function () {
