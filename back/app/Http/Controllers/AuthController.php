@@ -105,6 +105,16 @@ class AuthController extends Controller
     $users = $this->authRepository->getAllUsers($page, $limit);
     return response()->json($users);
 }
+public function getUserById(Request $request, $id)
+{
+    $user = $this->authRepository->getUserById($id);
+    
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    return response()->json($user);
+}
 
     public function updateUser(Request $request, $id)
     {
