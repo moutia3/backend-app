@@ -65,4 +65,15 @@ class TeletravailRequestController extends Controller
     
         return response()->json(['requests' => $teletravailRequests], 200);
     }
+
+    public function showRequest($id)
+    {
+        $teletravailRequest = $this->repository->find($id);
+
+        if (!$teletravailRequest) {
+            return response()->json(['message' => 'Demande non trouvée'], 404);
+        }
+
+        return response()->json(['request' => $teletravailRequest], 200);
+    }
 }
