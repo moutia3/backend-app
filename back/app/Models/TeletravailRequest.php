@@ -17,9 +17,6 @@ class TeletravailRequest extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Relation avec le département
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
+   
+  
 }

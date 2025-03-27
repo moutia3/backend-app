@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/departments/{id}', [DepartmentController::class, 'show']);
         Route::put('/departments/{id}', [DepartmentController::class, 'update']);
         Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
+        Route::get('/teletravail-requests/user/{userId}', [TeletravailRequestController::class, 'showRequestsByUser']);
     });
     
     Route::middleware('role:employee|manager|admin')->group(function () {

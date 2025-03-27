@@ -15,17 +15,25 @@ class TeletravailRequestController extends Controller
         $this->repository = $repository;
     }
 
+
+    public function showRequestsByUser($userId)
+{
+    $teletravailRequests = TeletravailRequest::where('user_id', $userId)->get();
+    if ($teletravailRequests->isEmpty()) {
+        return response()->json(['message' => 'Aucune demande trouvée pour cet utilisateur'], 404);
+    }
+    return response()->json(['requests' => $teletravailRequests], 200);
+}
+
     public function submitRequest(Request $request)
     {
         $request->validate([
             'date' => 'required|date',
             'reason' => 'required|string|max:255',
-            'department_id' => 'required|exists:departments,id', // Validez l'existence du département
         ]);
     
         $data = [
             'user_id' => Auth::id(),
-            'department_id' => $request->department_id, // Ajoutez department_id
             'date' => $request->date,
             'reason' => $request->reason,
         ];

@@ -52,6 +52,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,manager,employee',
+             'department_id' => 'required|exists:departments,id'
         ]);
 
         if ($validator->fails()) {
@@ -64,24 +65,31 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $token = $this->authRepository->login($request->only('email', 'password'));
-
-        if (!$token) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        return response()->json(['token' => $token], 200);
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
+
+    $result = $this->authRepository->login($request->only('email', 'password'));
+
+    if (!$result) {
+        return response()->json([
+            'message' => 'Invalid credentials',
+            'success' => false
+        ], 401);
+    }
+
+    return response()->json([
+        'token' => $result['token'],
+        'user' => $result['user'],
+        'success' => true
+    ], 200);
+}
 
     public function logout(Request $request)
     {
@@ -123,6 +131,7 @@ public function getUserById(Request $request, $id)
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'role' => 'sometimes|in:admin,manager,employee',
             'password' => 'sometimes|string|min:8',
+            'department_id' => 'required|exists:departments,id'
         ]);
 
         if ($validator->fails()) {
