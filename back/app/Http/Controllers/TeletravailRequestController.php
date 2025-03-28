@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\TeletravailRequestRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TeletravailRequest; // Add this import
 
 class TeletravailRequestController extends Controller
 {
@@ -15,17 +16,26 @@ class TeletravailRequestController extends Controller
         $this->repository = $repository;
     }
 
+    public function showRequestsByUser($userId)
+    {
+        $teletravailRequests = $this->repository->findByUser($userId);
+        
+        if ($teletravailRequests->isEmpty()) {
+            return response()->json(['message' => 'Aucune demande trouvée pour cet utilisateur'], 404);
+        }
+        
+        return response()->json(['requests' => $teletravailRequests], 200);
+    }
+
     public function submitRequest(Request $request)
     {
         $request->validate([
             'date' => 'required|date',
             'reason' => 'required|string|max:255',
-            'department_id' => 'required|exists:departments,id', // Validez l'existence du département
         ]);
     
         $data = [
             'user_id' => Auth::id(),
-            'department_id' => $request->department_id, // Ajoutez department_id
             'date' => $request->date,
             'reason' => $request->reason,
         ];
@@ -34,6 +44,7 @@ class TeletravailRequestController extends Controller
     
         return response()->json(['message' => 'Demande soumise avec succès', 'request' => $teletravailRequest], 201);
     }
+
     public function updateRequest(Request $request, $id)
     {
         $request->validate([
@@ -51,11 +62,12 @@ class TeletravailRequestController extends Controller
 
         return response()->json(['message' => 'Demande mise à jour avec succès', 'request' => $teletravailRequest], 200);
     }
+
     public function showRequests(Request $request)
     {
         $userId = Auth::id();
         $page = $request->input('page', 1);
-        $limit = 6; // Default limit
+        $limit = $request->input('limit', 6);
     
         $teletravailRequests = $this->repository->findByUser($userId, $page, $limit);
     
@@ -75,5 +87,16 @@ class TeletravailRequestController extends Controller
         }
 
         return response()->json(['request' => $teletravailRequest], 200);
+    }
+
+    public function index()
+    {
+        $requests = TeletravailRequest::with('user.department')
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+        
+        return response()->json([
+            'data' => $requests
+        ]);
     }
 }

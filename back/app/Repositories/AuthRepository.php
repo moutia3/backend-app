@@ -56,6 +56,7 @@ class AuthRepository implements AuthRepositoryInterface
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'department_id' => $data['department_id']
         ]);
 
         $user->assignRole($data['role']);
@@ -66,13 +67,15 @@ class AuthRepository implements AuthRepositoryInterface
 
     public function login(array $credentials)
     {
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
-            return $token;
+        if (!Auth::attempt($credentials)) {
+            return null;
         }
-
-        return null;
+        
+        $user = Auth::user();
+        return [
+            'token' => $user->createToken('auth_token')->plainTextToken,
+            'user' => $user
+        ];
     }
 
     public function logout($user)
@@ -87,11 +90,11 @@ class AuthRepository implements AuthRepositoryInterface
 
     public function getAllUsers($page = 1, $limit = 6)
 {
-    return User::with('roles')->paginate($limit, ['*'], 'page', $page);
+    return User::with(['roles', 'department'])->paginate($limit, ['*'], 'page', $page);
 }
     public function getUserById($id)
 {
-    return User::find($id);
+    return User::with('department')->find($id);
 }
 public function updateUser($id, array $data)
 {

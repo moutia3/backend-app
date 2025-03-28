@@ -11,9 +11,9 @@ class Department extends Model
 
     protected $fillable = ['name', 'description'];
 
-    // Relation avec les demandes de télétravail
-    public function teletravailRequests()
+    public function users()
     {
-        return $this->hasMany(TeletravailRequest::class);
+        return $this->hasMany(User::class);
     }
+   
 }

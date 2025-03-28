@@ -33,17 +33,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users', [AuthController::class, 'getAllUsers']);
         Route::get('/users/{id}', [AuthController::class, 'getUserById']);
         Route::put('/users/{id}', [AuthController::class, 'updateUser']);
+        
         Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
     });
     
     Route::middleware('role:manager|admin')->group(function () {
-        
+        Route::get('/show-requests', [TeletravailRequestController::class, 'index']);
         Route::put('/posts/{id}', [PostController::class, 'update']);
         Route::get('/departments', [DepartmentController::class, 'index']);
         Route::post('/departments', [DepartmentController::class, 'store']);
         Route::get('/departments/{id}', [DepartmentController::class, 'show']);
         Route::put('/departments/{id}', [DepartmentController::class, 'update']);
         Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
+        Route::get('/teletravail-requests/user/{userId}', [TeletravailRequestController::class, 'showRequestsByUser']);
     });
     
     Route::middleware('role:employee|manager|admin')->group(function () {
