@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     Route::middleware('role:manager|admin')->group(function () {
+       
+Route::put('/teletravail-requests/{id}/status', [TeletravailRequestController::class, 'updateStatus']);
         Route::get('/show-requests', [TeletravailRequestController::class, 'index']);
         Route::put('/posts/{id}', [PostController::class, 'update']);
         Route::get('/departments', [DepartmentController::class, 'index']);

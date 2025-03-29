@@ -26,6 +26,28 @@ class TeletravailRequestController extends Controller
         
         return response()->json(['requests' => $teletravailRequests], 200);
     }
+     
+    
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,approved,rejected'
+        ]);
+
+        $teletravailRequest = $this->repository->find($id);
+
+        if (!$teletravailRequest) {
+            return response()->json(['message' => 'Demande non trouvée'], 404);
+        }
+
+        $teletravailRequest->status = $request->status;
+        $teletravailRequest->save();
+
+        return response()->json([
+            'message' => 'Statut mis à jour avec succès',
+            'request' => $teletravailRequest
+        ], 200);
+    }
 
     public function submitRequest(Request $request)
     {
