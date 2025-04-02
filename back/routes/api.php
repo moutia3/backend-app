@@ -51,6 +51,8 @@ Route::put('/teletravail-requests/{id}/status', [TeletravailRequestController::c
     });
     
     Route::middleware('role:employee|manager|admin')->group(function () {
+        Route::get('/notifications', [NotificationController::class, 'index']);
+Route::put('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
         Route::get('/posts', [PostController::class, 'index']);
         Route::get('/departments/{id}', [DepartmentController::class, 'show']);
         Route::get('/departments', [DepartmentController::class, 'index']);
