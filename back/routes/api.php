@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     Route::middleware('role:manager|admin')->group(function () {
+       
+Route::put('/teletravail-requests/{id}/status', [TeletravailRequestController::class, 'updateStatus']);
         Route::get('/show-requests', [TeletravailRequestController::class, 'index']);
         Route::put('/posts/{id}', [PostController::class, 'update']);
         Route::get('/departments', [DepartmentController::class, 'index']);
@@ -49,6 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     Route::middleware('role:employee|manager|admin')->group(function () {
+        Route::get('/notifications', [NotificationController::class, 'index']);
+Route::put('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
         Route::get('/posts', [PostController::class, 'index']);
         Route::get('/departments/{id}', [DepartmentController::class, 'show']);
         Route::get('/departments', [DepartmentController::class, 'index']);

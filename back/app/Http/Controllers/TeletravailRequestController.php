@@ -26,7 +26,40 @@ class TeletravailRequestController extends Controller
         
         return response()->json(['requests' => $teletravailRequests], 200);
     }
-
+     
+    
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,approved,rejected'
+        ]);
+    
+        $teletravailRequest = $this->repository->find($id);
+    
+        if (!$teletravailRequest) {
+            return response()->json(['message' => 'Demande non trouvée'], 404);
+        }
+    
+        $oldStatus = $teletravailRequest->status;
+        
+        // Utilisez la nouvelle méthode du repository
+        $updatedRequest = $this->repository->updateStatus($id, $request->status);
+    
+        if ($oldStatus !== $request->status) {
+            $requestDetails = [
+                'user_name' => $teletravailRequest->user->name,
+                'date' => $teletravailRequest->date,
+                'status' => $request->status
+            ];
+            
+            $this->repository->sendStatusEmail($teletravailRequest->user->email, $requestDetails);
+        }
+    
+        return response()->json([
+            'message' => 'Statut mis à jour avec succès',
+            'request' => $updatedRequest
+        ], 200);
+    }
     public function submitRequest(Request $request)
     {
         $request->validate([
