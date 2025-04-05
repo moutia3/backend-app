@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TeletravailRequestController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\GlobalSettingController;
 
 
 
@@ -35,6 +36,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/users/{id}', [AuthController::class, 'updateUser']);
         
         Route::delete('/users/{id}', [AuthController::class, 'deleteUser']);
+
+        Route::middleware('role:admin')->group(function () {
+            Route::get('/global-settings', [GlobalSettingController::class, 'index']);
+            Route::post('/global-settings', [GlobalSettingController::class, 'store']);
+            Route::put('/global-settings/{id}', [GlobalSettingController::class, 'update']);
+            Route::delete('/global-settings/{id}', [GlobalSettingController::class, 'destroy']);
+        });
     });
     
     Route::middleware('role:manager|admin')->group(function () {
@@ -56,6 +64,7 @@ Route::put('/notifications/mark-as-read', [NotificationController::class, 'markA
         Route::get('/posts', [PostController::class, 'index']);
         Route::get('/departments/{id}', [DepartmentController::class, 'show']);
         Route::get('/departments', [DepartmentController::class, 'index']);
+        Route::get('/global-settings', [GlobalSettingController::class, 'getSettings']);
     });
 
     Route::middleware('role:manager|employee')->group(function () {
@@ -63,6 +72,7 @@ Route::put('/notifications/mark-as-read', [NotificationController::class, 'markA
         Route::put('/teletravail-requests/{id}', [TeletravailRequestController::class, 'updateRequest']);
         Route::get('/teletravail-requests/{id}', [TeletravailRequestController::class, 'showRequest']);
         Route::get('/teletravail-requests', [TeletravailRequestController::class, 'showRequests']);
+     
     });
     
 });
