@@ -29,37 +29,48 @@ class TeletravailRequestController extends Controller
      
     
     public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,approved,rejected'
-        ]);
-    
-        $teletravailRequest = $this->repository->find($id);
-    
-        if (!$teletravailRequest) {
-            return response()->json(['message' => 'Demande non trouvée'], 404);
-        }
-    
-        $oldStatus = $teletravailRequest->status;
-        
-        // Utilisez la nouvelle méthode du repository
-        $updatedRequest = $this->repository->updateStatus($id, $request->status);
-    
-        if ($oldStatus !== $request->status) {
-            $requestDetails = [
-                'user_name' => $teletravailRequest->user->name,
-                'date' => $teletravailRequest->date,
-                'status' => $request->status
-            ];
-            
-            $this->repository->sendStatusEmail($teletravailRequest->user->email, $requestDetails);
-        }
-    
-        return response()->json([
-            'message' => 'Statut mis à jour avec succès',
-            'request' => $updatedRequest
-        ], 200);
+{
+    $request->validate([
+        'status' => 'required|in:pending,approved,rejected'
+    ]);
+
+    $teletravailRequest = $this->repository->find($id);
+
+    if (!$teletravailRequest) {
+        return response()->json(['message' => 'Demande non trouvée'], 404);
     }
+
+    $user = $teletravailRequest->user;
+
+
+    if (auth()->user()->hasRole('manager') && $teletravailRequest->user_id == auth()->id()) {
+        return response()->json(['message' => 'Vous ne pouvez pas approuver votre propre demande'], 403);
+    }
+
+    if (auth()->user()->hasRole('manager') && $user->hasRole('manager')) {
+        return response()->json(['message' => 'Vous ne pouvez pas approuver les demandes d\'autres managers'], 403);
+    }
+    else{
+    $oldStatus = $teletravailRequest->status;
+    
+    $updatedRequest = $this->repository->updateStatus($id, $request->status);
+
+    if ($oldStatus !== $request->status) {
+        $requestDetails = [
+            'user_name' => $user->name,
+            'date' => $teletravailRequest->date,
+            'status' => $request->status
+        ];
+        
+        $this->repository->sendStatusEmail($user->email, $requestDetails);
+    }}
+
+    return response()->json([
+        'message' => 'Statut mis à jour avec succès',
+        'request' => $updatedRequest
+    ], 200);
+}
+    
     public function submitRequest(Request $request)
     {
         $request->validate([
