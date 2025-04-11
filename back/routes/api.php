@@ -65,6 +65,7 @@ Route::put('/notifications/mark-as-read', [NotificationController::class, 'markA
         Route::get('/departments/{id}', [DepartmentController::class, 'show']);
         Route::get('/departments', [DepartmentController::class, 'index']);
         Route::get('/global-settings', [GlobalSettingController::class, 'getSettings']);
+        Route::get('/global-settings/check-availability', [GlobalSettingController::class, 'checkAvailability']);
     });
 
     Route::middleware('role:manager|employee')->group(function () {
