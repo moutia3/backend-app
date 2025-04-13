@@ -7,7 +7,7 @@ use App\Repositories\GlobalSettingRepositoryInterface;
 use Illuminate\Support\Facades\Validator;
 use App\Models\GlobalSetting;
 use App\Models\TeletravailRequest;
-
+use App\Models\User;
 
 class GlobalSettingController extends Controller
 {
@@ -77,11 +77,9 @@ class GlobalSettingController extends Controller
         return response()->json($settings, 200);
     }
 
-    // Dans GlobalSettingController.php
 public function checkAvailability(Request $request)
 {
     $date = $request->input('date');
-    
     $setting = GlobalSetting::where('date', $date)->first();
     
     if (!$setting) {
@@ -98,19 +96,31 @@ public function checkAvailability(Request $request)
         ]);
     }
     
+
+
     if ($setting->status === 'limited') {
-        $currentCount = TeletravailRequest::where('date', $date)
+        
+        $totalEmployees = User::whereHas('roles', function($query) {
+            $query->whereIn('name', ['employee', 'manager']);
+        })->count();
+        
+        $absoluteLimit = max(1, ceil($totalEmployees * $setting->daily_limit / 100));
+        
+        // Compter seulement les demandes APPROUVÉES
+        $approvedCount = TeletravailRequest::where('date', $date)
             ->where('status', 'approved')
             ->count();
             
-        $remaining = max(0, $setting->daily_limit - $currentCount);
+        $remaining = max(0, $absoluteLimit - $approvedCount);
         
         return response()->json([
             'status' => $remaining > 0 ? 'limited' : 'blocked',
             'remaining_slots' => $remaining,
             'daily_limit' => $setting->daily_limit,
+            'absolute_limit' => $absoluteLimit,
+            'current_count' => $approvedCount, 
             'message' => $remaining > 0 
-                ? "Places restantes: $remaining/$setting->daily_limit" 
+                ? "Places restantes: $remaining/$absoluteLimit (limite: {$setting->daily_limit}%)" 
                 : "Quota atteint pour cette date"
         ]);
     }
