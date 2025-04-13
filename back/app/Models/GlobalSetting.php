@@ -53,4 +53,26 @@ class GlobalSetting extends Model
     {
         return $this->hasMany(TeletravailRequest::class, 'date', 'date');
     }
+
+        public function isLimitReached()
+    {
+        if ($this->status !== 'limited' || is_null($this->daily_limit)) {
+            return false;
+        }
+
+        // Calculer le nombre total d'employés et managers
+        $totalEmployees = User::whereHas('roles', function($query) {
+            $query->whereIn('name', ['employee', 'manager']);
+        })->count();
+
+        // Calculer la limite absolue
+        $absoluteLimit = ceil($totalEmployees * ($this->daily_limit / 100));
+
+        // Compter les demandes approuvées pour cette date
+        $approvedRequests = TeletravailRequest::where('date', $this->date)
+            ->where('status', 'approved')
+            ->count();
+
+        return $approvedRequests >= $absoluteLimit;
+    }
 }

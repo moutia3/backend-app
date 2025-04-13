@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\GlobalSetting;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Repositories\TeletravailRequestRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
@@ -71,24 +72,32 @@ class TeletravailRequestController extends Controller
     ], 200);
 }
     
-    public function submitRequest(Request $request)
-    {
-        $request->validate([
-            'date' => 'required|date',
-            'reason' => 'required|string|max:255',
-        ]);
-    
-        $data = [
-            'user_id' => Auth::id(),
-            'date' => $request->date,
-            'reason' => $request->reason,
-        ];
-    
-        $teletravailRequest = $this->repository->create($data);
-    
-        return response()->json(['message' => 'Demande soumise avec succès', 'request' => $teletravailRequest], 201);
-    }
+   // app/Http/Controllers/TeletravailRequestController.php
+  // app/Http/Controllers/TeletravailRequestController.php
+// app/Http/Controllers/TeletravailRequestController.php
+// app/Http/Controllers/TeletravailRequestController.php
+public function submitRequest(Request $request)
+{
+    $request->validate([
+        'date' => 'required|date',
+        'reason' => 'required|string|max:255',
+    ]);
 
+    $data = [
+        'user_id' => Auth::id(),
+        'date' => $request->date,
+        'reason' => $request->reason,
+        'status' => 'pending', // Garder comme 'pending' par défaut
+        'department_id' => Auth::user()->department_id
+    ];
+
+    $teletravailRequest = TeletravailRequest::create($data);
+
+    return response()->json([
+        'message' => 'Demande soumise avec succès. En attente d\'approbation.',
+        'request' => $teletravailRequest
+    ], 201);
+}
     public function updateRequest(Request $request, $id)
     {
         $request->validate([

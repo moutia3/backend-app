@@ -10,13 +10,18 @@ class TeletravailRequest extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'date', 'reason', 'status', 'department_id']; // Ajoutez 'department_id'
-
+    protected $casts = [
+        'date' => 'date:Y-m-d',
+    ];
     // Relation avec l'utilisateur
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-   
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
   
 }
