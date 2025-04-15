@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\TeletravailRequestController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\GlobalSettingController;
+use App\Http\Controllers\StatisticsController;
 
 
 
@@ -42,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/global-settings', [GlobalSettingController::class, 'store']);
             Route::put('/global-settings/{id}', [GlobalSettingController::class, 'update']);
             Route::delete('/global-settings/{id}', [GlobalSettingController::class, 'destroy']);
+            Route::get('/statistics', [StatisticsController::class, 'getStatistics']);
         });
     });
     
