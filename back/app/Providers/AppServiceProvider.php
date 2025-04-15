@@ -11,7 +11,8 @@ use App\Repositories\DepartmentRepositoryInterface;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\GlobalSettingRepositoryInterface;
 use App\Repositories\GlobalSettingRepository;
-
+use App\Repositories\StatisticsRepositoryInterface;
+use App\Repositories\StatisticsRepository;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
         $this->app->bind(TeletravailRequestRepositoryInterface::class, TeletravailRequestRepository::class);
         $this->app->bind(GlobalSettingRepositoryInterface::class, GlobalSettingRepository::class);
+        $this->app->bind(StatisticsRepositoryInterface::class, StatisticsRepository::class);
     }
 
     /**
