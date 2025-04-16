@@ -8,6 +8,7 @@ use App\Http\Controllers\TeletravailRequestController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\GlobalSettingController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\NotificationController;
 
 
 
@@ -26,6 +27,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::get('/profile', [AuthController::class, 'getProfile']);
     Route::delete('/profile', [AuthController::class, 'deleteProfile']);
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::put('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
+    Route::put('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead']);
    
   
 

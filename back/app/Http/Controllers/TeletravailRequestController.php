@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Repositories\TeletravailRequestRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TeletravailRequest; // Add this import
+use App\Models\Notification;
 
 class TeletravailRequestController extends Controller
 {
@@ -43,7 +44,6 @@ class TeletravailRequestController extends Controller
 
     $user = $teletravailRequest->user;
 
-
     if (auth()->user()->hasRole('manager') && $teletravailRequest->user_id == auth()->id()) {
         return response()->json(['message' => 'Vous ne pouvez pas approuver votre propre demande'], 403);
     }
@@ -51,20 +51,27 @@ class TeletravailRequestController extends Controller
     if (auth()->user()->hasRole('manager') && $user->hasRole('manager')) {
         return response()->json(['message' => 'Vous ne pouvez pas approuver les demandes d\'autres managers'], 403);
     }
-    else{
+
     $oldStatus = $teletravailRequest->status;
-    
     $updatedRequest = $this->repository->updateStatus($id, $request->status);
 
     if ($oldStatus !== $request->status) {
+        // Create in-app notification
+        Notification::create([
+            'user_id' => $teletravailRequest->user_id,
+            'message' => "Votre demande de télétravail pour le {$teletravailRequest->date} a été {$request->status}.",
+            'type' => $request->status === 'approved' ? 'success' : ($request->status === 'rejected' ? 'error' : 'info'),
+            'data' => ['request_id' => $teletravailRequest->id]
+        ]);
+
+        // Send email notification (existing logic)
         $requestDetails = [
             'user_name' => $user->name,
             'date' => $teletravailRequest->date,
             'status' => $request->status
         ];
-        
         $this->repository->sendStatusEmail($user->email, $requestDetails);
-    }}
+    }
 
     return response()->json([
         'message' => 'Statut mis à jour avec succès',
