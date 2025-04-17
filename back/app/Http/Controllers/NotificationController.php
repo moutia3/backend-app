@@ -42,4 +42,15 @@ class NotificationController extends Controller
 
         return response()->json(['message' => 'Toutes les notifications marquées comme lues'], 200);
     }
+
+    public function destroy($id)
+    {
+        $notification = Notification::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $notification->delete();
+
+        return response()->json(null, 204);
+    }
 }
