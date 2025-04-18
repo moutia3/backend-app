@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::put('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
     Route::put('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
    
   
 
