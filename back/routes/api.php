@@ -9,7 +9,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\GlobalSettingController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\NotificationController;
-
+use App\Http\Controllers\ChatbotController;
 
 
 Route::post('/login', action: [AuthController::class, 'login']);
@@ -32,9 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
     Route::put('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
-   
-  
-
+    Route::get('/chatbot/questions', [ChatbotController::class, 'getQuestions']);
+    Route::post('/chatbot/answer', [ChatbotController::class, 'getAnswer']);
     Route::middleware('role:admin')->group(function () {
         Route::post('/addUser', [AuthController::class, 'addUser']);
         Route::post('/posts', [PostController::class, 'store']);
