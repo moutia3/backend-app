@@ -23,7 +23,7 @@ class ChatbotController extends Controller
             ],
             [
                 'question' => 'Puis-je modifier une demande soumise ?',
-                'answer' => 'Oui, vous pouvez modifier une demande tant qu\'elle n\'a pas encore été approuvée ou rejetée. Allez dans "Mes demandes", sélectionnez la demande et cliquez sur "Modifier".'
+                'answer' => 'Oui, vous pouvez modifier une demande tant qu\'elle n\'a pas encore été approuvée ou rejetée. Allez dans "Liste Des Demandes", sélectionnez la demande et cliquez sur "Modifier".'
             ],
             [
                 'question' => 'Quand serai-je informé de la décision sur ma demande ?',
@@ -40,7 +40,7 @@ class ChatbotController extends Controller
         
         $faqs = [
             'Combien de jours par mois puis-je demander à télétravailler ?' => 
-                'La politique actuelle permet jusqu\'à 8 jours de télétravail par mois, sous réserve d\'approbation de votre manager allez dans l\'onglet calendrier pour voir les jours disponibles, bloqués et limités.',
+                'La politique actuelle permet jusqu\'à 8 jours de télétravail par mois, sous réserve d\'approbation de votre manager allez dans l\'onglet Calendrier De Télétravail pour voir les jours disponibles, bloqués et limités.',
             'Quels jours fériés y a-t-il cette année ?' => 
                                 'Les jours fériés pour cette année sont:
                 Jeudi 20 mars : Fête de l’Indépendance (commémore l’indépendance de la Tunisie en 1956)
@@ -53,7 +53,7 @@ class ChatbotController extends Controller
             'Comment déposer une demande de télétravail ?' => 
                 'Pour soumettre une demande, allez dans l\'onglet "Liste Des Demandes" et cliquez sur "Ajouter Une demande". Remplissez le formulaire avec la date et la raison, puis soumettez-la pour approbation.',
             'Puis-je modifier une demande soumise ?' => 
-                'Oui, vous pouvez modifier une demande tant qu\'elle n\'a pas encore été approuvée ou rejetée. Allez dans "Mes demandes", sélectionnez la demande et cliquez sur "Modifier".',
+                'Oui, vous pouvez modifier une demande tant qu\'elle n\'a pas encore été approuvée ou rejetée. Allez dans "Liste Des Demandes", sélectionnez la demande et cliquez sur "Modifier".',
             'Quand serai-je informé de la décision sur ma demande ?' => 
                 'Les demandes sont généralement traitées dans un délai de 2 à 3 jours ouvrables. Vous recevrez une notification par email et dans l\'application une fois la décision prise.'
         ];
