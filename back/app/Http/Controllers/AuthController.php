@@ -52,8 +52,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,manager,employee',
-             'department_id' => 'required|exists:departments,id'
-        ]);
+'department_id' => 'required_if:role,manager,employee|exists:departments,id|nullable'        ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -201,7 +200,7 @@ public function updateProfile(Request $request)
         return response()->json(['message' => 'User not found'], 404);
     }
 
-    return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
+    return response()->json(['message' => 'Profil mis à jour avec succès', 'user' => $user], 200);
 }
 public function getProfile(Request $request)
     {
