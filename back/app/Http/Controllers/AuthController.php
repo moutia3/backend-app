@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 
 
 class AuthController extends Controller
@@ -36,51 +37,58 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
+    
         $response = $this->authRepository->resetPassword($request->only(
             'email', 'password', 'password_confirmation', 'token'
         ));
-
+    
         return response()->json(['message' => $response['message']], $response['status']);
     }
 
-    public function register(Request $request)
+    public function addUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,manager,employee',
-        ]);
+'department_id' => 'required_if:role,manager,employee|exists:departments,id|nullable'        ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = $this->authRepository->register($request->all());
+        $user = $this->authRepository->addUser($request->all());
 
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     }
 
     public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $token = $this->authRepository->login($request->only('email', 'password'));
-
-        if (!$token) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        return response()->json(['token' => $token], 200);
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
+
+    $result = $this->authRepository->login($request->only('email', 'password'));
+
+    if (!$result) {
+        return response()->json([
+            'message' => 'Invalid credentials',
+            'success' => false
+        ], 401);
+    }
+
+    return response()->json([
+        'token' => $result['token'],
+        'user' => $result['user'],
+        'success' => true
+    ], 200);
+}
 
     public function logout(Request $request)
     {
@@ -92,15 +100,28 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = $this->authRepository->getUser($request->user());
-
+    
         return response()->json($user);
     }
 
-    public function getAllUsers()
-    {
-        $users = $this->authRepository->getAllUsers();
-        return response()->json($users);
+    public function getAllUsers(Request $request)
+{
+    $page = $request->input('page', 1);
+    $limit = 6;
+
+    $users = $this->authRepository->getAllUsers($page, $limit);
+    return response()->json($users);
+}
+public function getUserById(Request $request, $id)
+{
+    $user = $this->authRepository->getUserById($id);
+    
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
     }
+
+    return response()->json($user);
+}
 
     public function updateUser(Request $request, $id)
     {
@@ -109,6 +130,7 @@ class AuthController extends Controller
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'role' => 'sometimes|in:admin,manager,employee',
             'password' => 'sometimes|string|min:8',
+            'department_id' => 'required|exists:departments,id'
         ]);
 
         if ($validator->fails()) {
@@ -178,7 +200,7 @@ public function updateProfile(Request $request)
         return response()->json(['message' => 'User not found'], 404);
     }
 
-    return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
+    return response()->json(['message' => 'Profil mis à jour avec succès', 'user' => $user], 200);
 }
 public function getProfile(Request $request)
     {
@@ -203,6 +225,15 @@ public function getProfile(Request $request)
     }
 
     return response()->json(['message' => 'User deleted successfully'], 200);
+}
+
+public function getUserRoles(Request $request)
+{
+    // Get the authenticated user
+    $user = Auth::user();
+
+    // Return the user's roles
+    return response()->json($user->getRoleNames(), 200);
 }
 
 
