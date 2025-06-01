@@ -16,7 +16,7 @@ use App\Repositories\StatisticsRepository;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * 
      */
     public function register(): void
     {
@@ -28,10 +28,10 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * B
      */
     public function boot(): void
     {
-        //
+        
     }
 }

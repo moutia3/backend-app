@@ -15,8 +15,8 @@ class DepartmentController extends Controller
     }
 
     public function index(Request $request)
-    { // Default items per page
-        $page = $request->input('page', 1); // Current page
+    { 
+        $page = $request->input('page', 1); 
         $limit = 6;
 
         $departments = $this->repository->paginate($page, $limit);

@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Repositories\TeletravailRequestRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TeletravailRequest; // Add this import
+use App\Models\TeletravailRequest; 
 use App\Models\Notification;
 
 class TeletravailRequestController extends Controller
@@ -56,7 +56,6 @@ class TeletravailRequestController extends Controller
     $updatedRequest = $this->repository->updateStatus($id, $request->status);
 
     if ($oldStatus !== $request->status) {
-        // Create in-app notification
         Notification::create([
             'user_id' => $teletravailRequest->user_id,
             'message' => "Votre demande de télétravail pour le {$teletravailRequest->date} a été {$request->status}.",
@@ -64,7 +63,6 @@ class TeletravailRequestController extends Controller
             'data' => ['request_id' => $teletravailRequest->id]
         ]);
 
-        // Send email notification (existing logic)
         $requestDetails = [
             'user_name' => $user->name,
             'date' => $teletravailRequest->date,
@@ -79,10 +77,7 @@ class TeletravailRequestController extends Controller
     ], 200);
 }
     
-   // app/Http/Controllers/TeletravailRequestController.php
-  // app/Http/Controllers/TeletravailRequestController.php
-// app/Http/Controllers/TeletravailRequestController.php
-// app/Http/Controllers/TeletravailRequestController.php
+ 
 public function submitRequest(Request $request)
 {
     $request->validate([
@@ -94,7 +89,7 @@ public function submitRequest(Request $request)
         'user_id' => Auth::id(),
         'date' => $request->date,
         'reason' => $request->reason,
-        'status' => 'pending', // Garder comme 'pending' par défaut
+        'status' => 'pending', 
         'department_id' => Auth::user()->department_id
     ];
 
