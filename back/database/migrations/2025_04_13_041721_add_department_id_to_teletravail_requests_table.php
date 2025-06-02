@@ -6,10 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-   // database/migrations/xxxx_add_department_id_to_teletravail_requests_table.php
+   
 public function up()
 {
     Schema::table('teletravail_requests', function (Blueprint $table) {

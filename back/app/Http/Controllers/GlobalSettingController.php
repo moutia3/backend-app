@@ -106,7 +106,6 @@ public function checkAvailability(Request $request)
         
         $absoluteLimit = max(1, ceil($totalEmployees * $setting->daily_limit / 100));
         
-        // Compter seulement les demandes APPROUVÉES
         $approvedCount = TeletravailRequest::where('date', $date)
             ->where('status', 'approved')
             ->count();

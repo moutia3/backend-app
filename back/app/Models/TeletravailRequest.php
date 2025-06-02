@@ -13,7 +13,6 @@ class TeletravailRequest extends Model
     protected $casts = [
         'date' => 'date:Y-m-d',
     ];
-    // Relation avec l'utilisateur
     public function user()
     {
         return $this->belongsTo(User::class);

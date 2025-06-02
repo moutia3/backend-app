@@ -10,14 +10,14 @@ class GlobalSetting extends Model
     use HasFactory;
 
     /**
-     * La table associée au modèle.
+     * 
      *
      * @var string
      */
     protected $table = 'global_settings';
 
     /**
-     * Les attributs qui peuvent être assignés en masse.
+     * 
      *
      * @var array
      */
@@ -29,7 +29,7 @@ class GlobalSetting extends Model
     ];
 
     /**
-     * Les attributs qui doivent être castés en types natifs.
+     *
      *
      * @var array
      */
@@ -40,12 +40,12 @@ class GlobalSetting extends Model
     ];
 
     /**
-     * Vérifie si le télétravail est autorisé pour cette date.
+     *
      *
      * @return bool
      */
     /**
-     * Relation avec les demandes de télétravail (optionnelle).
+     * 
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -60,15 +60,12 @@ class GlobalSetting extends Model
             return false;
         }
 
-        // Calculer le nombre total d'employés et managers
         $totalEmployees = User::whereHas('roles', function($query) {
             $query->whereIn('name', ['employee', 'manager']);
         })->count();
 
-        // Calculer la limite absolue
         $absoluteLimit = ceil($totalEmployees * ($this->daily_limit / 100));
 
-        // Compter les demandes approuvées pour cette date
         $approvedRequests = TeletravailRequest::where('date', $this->date)
             ->where('status', 'approved')
             ->count();
